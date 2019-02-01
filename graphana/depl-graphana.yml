@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-depl
+  labels:
+    component: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: TP-meteo
+      type: graph
+      component: grafana
+  template:
+    metadata:
+      labels:
+        app: TP-meteo
+        type: graph
+        component: grafana
+    spec:
+      containers:
+       - name: grafana-cont
+         image: "grafana/grafana"
+         ports:
+          - containerPort: 3000
+         volumeMounts:
+           - mountPath: /var/lib/grafana
+             name: grafana-vol
+      volumes:
+        - name: grafana-vol
+          hostPath:
+            path: /tmp/grafana
+            type: DirectoryOrCreate
+

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meteo-depl
+  labels:
+    component: meteo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: TP-meteo
+      type: API
+      component: meteo
+  template:
+    metadata:
+      labels:
+        app: TP-meteo
+        type: API
+        component: meteo
+    spec:
+      containers:
+       - name: meteo-cont
+         image: pockost/telegraf-cf-weather
+         env:
+          - name: INFLUXDB_PORT
+            value: "8086"
+          - name: INFLUXDB_NAME
+            value: mydb
+          - name: INFLUXDB_USER
+            value: user
+          - name: INFLUXDB_PASSWORD
+            value: user
+          - name: INFLUXDB_HOST
+            value: db-serv
+          - name: FORCE_TEMP
+            value: "40"

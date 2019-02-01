@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphana-serv-lb
+  labels:
+    app: graphana-lb
+spec:
+  selector:
+    app: TP-meteo
+    type: graph
+    component: grafana
+  type: LoadBalancer
+  ports:
+    - name: db-port
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

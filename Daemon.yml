@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: telegraf-daemonset
+  namespace: default
+  labels:
+    app: telegraf-logging
+spec:
+  selector:
+    matchLabels:
+      name: telegraf-daemonset
+  template:
+    metadata:
+      labels:
+        name: telegraf-daemonset
+    spec:
+      containers:
+       - name: telegraf-cont
+         image: telegraf
+         volumeMounts:
+           - mountPath: /etc/telegraf/telegraf.conf
+             name: telegrapf-vol
+           - mountPath: /var/run/docker.sock
+             name: docker-sock
+      volumes:
+        - name: telegrapf-vol
+          hostPath:
+            path: /home/docker/telegraf.conf
+            type: File
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+---
+
+

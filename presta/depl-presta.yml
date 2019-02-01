@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prestashop
+  labels:
+    app: TP-presta
+    type: front
+    component: prestashop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: TP-presta
+      type: front
+      component: prestashop
+  template:
+    metadata:
+      labels:
+        app: TP-presta
+        type: front
+        component: prestashop
+    spec:
+      containers:
+       - name: presta-cont
+         image: prestashop/prestashop
+         env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: root
+          - name: http_proxy
+            value: 193.56.47.8:8080
+          - name: https_proxy
+            value: 193.56.47.8:8080
+         volumeMounts:
+           - mountPath: /var/www/html
+             name: presta-volume
+      volumes:
+        - name: presta-volume
+          persistentVolumeClaim:
+            claimName: prestashop-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: presta-srv
+  labels:
+    app: presta-srv
+spec:
+  selector:
+    app: TP-presta
+    type: front
+    component: prestashop
+  type: LoadBalancer
+  ports:
+    - name: prestashop-front-serv
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+

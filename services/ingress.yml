@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tp-ingress
+spec:
+  backend:
+    serviceName: graphana-serv-lb
+    servicePort: 3000
+  rules:
+   - host: monitoring.example.lan
+     http:
+       paths:
+        - path: /influx/
+          backend:
+            serviceName: db-serv
+            servicePort: 8086
+        - backend:
+            serviceName: graphana-serv-lb
+            servicePort: 3000

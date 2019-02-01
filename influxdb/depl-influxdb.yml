@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb-depl
+  labels:
+    app: TP-meteo
+    type: db
+    component: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: TP-meteo
+      type: db
+      component: influxdb
+  template:
+    metadata:
+      labels:
+        app: TP-meteo
+        type: db
+        component: influxdb
+    spec:
+      containers:
+       - name: influxdb-cont
+         image: influxdb
+         env:
+          - name: INFLUXDB_DB
+            value: mydb
+          - name: INFLUXDB_ADMIN_USER
+            value: root
+          - name: INFLUXDB_ADMIN_PASSWORD
+            value: root
+          - name: INFLUXDB_USER
+            value: user
+          - name: INFLUXDB_USER_PASSWORD
+            value: user
+         volumeMounts:
+           - mountPath: /var/lib/influxdb
+             name: influx-vol
+      volumes:
+        - name: influx-vol
+          hostPath:
+            path: /tmp/influx
+            type: Directory
+

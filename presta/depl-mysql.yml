@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: TP-presta
+    type: db
+    component: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: TP-presta
+      type: db
+      component: mysql
+  template:
+    metadata:
+      labels:
+        app: TP-presta
+        type: db
+        component: mysql
+    spec:
+      containers:
+       - name: mysql-cont
+         image: mysql:5.7
+         env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: root
+          - name: MYSQL_DATABASE
+            value: prestashop
+         volumeMounts:
+           - mountPath: /var/lib/mysql
+             name: mysql-volume
+      volumes:
+        - name: mysql-volume
+          persistentVolumeClaim:
+            claimName: mysql-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-db-serv
+  labels:
+    app: mysql-db-serv
+spec:
+  selector:
+    app: TP-presta
+    type: db
+    component: mysql
+  ports:
+    - name: mysql-db-port
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
